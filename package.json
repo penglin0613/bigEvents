@@ -1,0 +1,28 @@
+{
+  "name": "bigNews",
+  "version": "1.0.0",
+  "description": "| *状态码* | *含义*                | *说明*                                              |\r | -------- | --------------------- | --------------------------------------------------- |\r | 200      | OK                    | 请求成功                                            |\r | 201      | CREATED               | 创建成功                                            |\r | 204      | DELETED               | 删除成功                                            |\r | 400      | BAD REQUEST           | 请求的地址不存在或者包含不支持的参数                |\r | 401      | UNAUTHORIZED          | 未授权                                              |\r | 403      | FORBIDDEN             | 被禁止访问                                          |\r | 404      | NOT FOUND             | 请求的资源不存在                                    |\r | 422      | Unprocesable entity   | [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误 |\r | 500      | INTERNAL SERVER ERROR | 内部错误                                            |",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutumnFish/bigNews.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AutumnFish/bigNews/issues"
+  },
+  "homepage": "https://github.com/AutumnFish/bigNews#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.0",
+    "moment": "^2.24.0",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.1"
+  }
+}
