@@ -1,8 +1,19 @@
+const {  validationResult } = require("express-validator")
+
 module.exports = {
-  invalidParameter(res, parName, msg = '参数无效，请检查') {
-    res.send({
-      msg: `${parName} ${msg}'`,
-      code: 400
-    })
+  errorMsg: (req, res, next) => {
+    const valRes = validationResult(req)
+    if (!valRes.isEmpty()) {
+      let msg = ""
+      valRes.errors.forEach(v => {
+        msg += `${v.param},`
+      })
+      msg = msg.slice(0, -1)
+      msg += " 参数有问题,请检查"
+      return res.status(400).send({
+        msg
+      })
+    }
+    next()
   }
 }

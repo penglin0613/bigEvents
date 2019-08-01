@@ -1,29 +1,50 @@
-## 基地址
+## 运行说明 - 数据库
+1. 项目的数据保存在mysql中,先保证打开mysql
+2. 在数据库中新建一个库`bignews`
+3. 打开config.js中的 下面几个地方,调整成和自己数据库设置相同的设置
+```
+    // 库名
+    database:'bignews',
+    // 用户名
+    username:'root',
+    // 密码
+    password:'root',
+    // 主机
+    host:'127.0.0.1',
+```
 
-本地基础地址为 http://localhost:8000/
-网络基础地址为:https://autumnfish.cn/big/admin/
+## 运行说明 - 初始数据
+1. 模拟的数据在reset文件夹中
+2. 用node运行 reset/index.js即可导入测试数据`node reset/index.js`
+3. 等待操作结束
+
+## 运行说明 - 运行项目
+1. 保证上述2步运行完毕之后,双击`开启.bat`即可
+2. 也可以输入命令`node app.js`
+
+## 项目基地址
+项目的基地址是`http://localhost:8080`
+
 
 ## 状态说明
 
-| _状态码_ | _含义_                | _说明_                                              |
-| -------- | --------------------- | --------------------------------------------------- |
-| 200      | OK                    | 请求成功                                            |
-| 201      | CREATED               | 创建成功                                            |
-| 204      | DELETED               | 删除成功                                            |
-| 400      | BAD REQUEST           | 请求的地址不存在或者包含不支持的参数                |
-| 401      | UNAUTHORIZED          | 未授权                                              |
-| 403      | FORBIDDEN             | 被禁止访问                                          |
-| 404      | NOT FOUND             | 请求的资源不存在                                    |
-| 422      | Unprocesable entity   | [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误 |
-| 500      | INTERNAL SERVER ERROR | 内部错误                                            |
+| _状态码_ | _含义_              | _说明_                                              |
+| -------- | ------------------- | --------------------------------------------------- |
+| 200      | OK                  | 请求成功                                            |
+| 201      | CREATED             | 创建成功                                            |
+| 204      | DELETED             | 删除成功                                            |
+| 400      | BAD REQUEST         | 请求的地址不存在或者包含不支持的参数                |
+| 401      | UNAUTHORIZED        | 未授权                                              |
+| 403      | FORBIDDEN           | 被禁止访问                                          |
+| 404      | NOT FOUND           | 请求的资源不存在                                    |
+| 422      | Unprocesable entity | [POST/PUT/PATCH] 当创建一个对象时，发生一个验证错误 |
+| 500      | INTERNAL SERVER ERROR | 内部错误   
 
-##
-
-## 前台接口(未完成)
+## 前台接口
 
 #### 1、文章搜索
 
-请求地址：/search
+请求地址：/index/search
 
 请求方式：get
 
@@ -32,17 +53,17 @@
 |  名称   |  类型  | 说明                                         |
 | :-----: | :----: | -------------------------------------------- |
 |   key   | string | 搜索关键词，可以为空，为空返回某类型所有文章 |
-|  type   | string | 文章类型，可以为空，为空返回所有类型文章     |
-|  page   | number | 当前页，为空返回第 1 页                      |
-| perpage | number | 每页显示条数，为空默认每页 6 条              |
+|  type   | string | 文章类型id，可以为空，为空返回所有类型文章   |
+|  page   | number | 当前页，为空返回第1页                        |
+| perpage | number | 每页显示条数，为空默认每页6条                |
 
 返回数据：
 
-| 名称  |  类型  | 说明                                                                                                                                                                                                                                                                                                                                        |
-| :---: | :----: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| pages | number | 总页数                                                                                                                                                                                                                                                                                                                                      |
-| page  | number | 当前页                                                                                                                                                                                                                                                                                                                                      |
-| data  | array  | 文章数据数组，其中每个成员包含字段：<br />id: number 类型，文章 id<br />title: string 类型，文章标题<br />intro: string 类型，文章文字内容截取<br />cover: string 类型，文章封面图片地址<br />type: string 类型，文章类型<br />read: number 类型，文章阅读次数<br />comment: number 类型，文章评论次数<br />date:string 类型， 文章发布时间 |
+| 名称  |  类型  | 说明                                                         |
+| :---: | :----: | ------------------------------------------------------------ |
+| pages | number | 总页数                                                       |
+| page  | number | 当前页                                                       |
+| data  | array  | 文章数据数组，其中每个成员包含字段：<br />id: number类型，文章id<br />title:  string类型，文章标题<br />intro: string类型，文章文字内容截取<br />cover: string类型，文章封面图片地址<br />category: string类型，文章类型<br />read: number类型，文章阅读次数<br />comment: number类型，文章评论次数<br />date:string类型， 文章发布时间 |
 
 返回数据结构示例：
 
@@ -77,9 +98,11 @@
 }
 ```
 
+
+
 #### 2、文章类型
 
-请求地址：/category
+请求地址：/index/category
 
 请求方式：get
 
@@ -87,109 +110,135 @@
 
 返回数据：
 
-| 名称 | 类型        | 说明     |
-| ---- | ----------- | -------- |
-| id   | number 类型 | 类别 id  |
-| name | string 类型 | 类别名称 |
+| 名称 | 类型       | 说明     |
+| ---- | ---------- | -------- |
+| id   | number类型 | 类别id   |
+| name | string类型 | 类别名称 |
+
+
 
 #### 3、热点图
 
-请求地址：/hotpic
+请求地址：/index/hotpic
 
 请求方式：get
 
 请求参数：无
 
-返回数据：（只返回 5 条）
+返回数据：（只返回5条）
 
-| 名称   | 类型        | 说明            |
-| ------ | ----------- | --------------- |
-| id     | number 类型 | 图片对应文章 id |
-| imgurl | string 类型 | 图片地址        |
+| 名称   | 类型       | 说明           |
+| ------ | ---------- | -------------- |
+| id     | number类型 | 图片对应文章id |
+| imgurl | string类型 | 图片地址       |
+
+
 
 #### 4、文章热门排行
 
-请求地址：/rank
+请求地址：/index/rank
 
 请求方式：get
 
 请求参数：无
 
-返回数据：（只返回 7 条）
+返回数据：（只返回7条）
 
-| 名称  | 类型        | 说明     |
-| ----- | ----------- | -------- |
-| id    | number 类型 | 文章 id  |
-| title | string      | 文章标题 |
+| 名称  | 类型       | 说明     |
+| ----- | ---------- | -------- |
+| id    | number类型 | 文章id   |
+| title | string     | 文章标题 |
+
+
 
 #### 5、最新资讯
 
-请求地址：/latest
+请求地址：/index/latest
 
 请求方式：get
 
 请求参数：无
 
-返回数据：（只返回 5 条）
+返回数据：（只返回5条）
 
-| 名称    | 类型        | 说明             |
-| ------- | ----------- | ---------------- |
-| id      | number 类型 | 文章 id          |
-| title   | string 类型 | 文章标题         |
-| intro   | string 类型 | 文章文字内容截取 |
-| cover   | string 类型 | 文章封面图片地址 |
-| type    | string 类型 | 文章类型         |
-| read    | number 类型 | 文章阅读次数     |
-| comment | number 类型 | 评论条数         |
-| date    | string 类型 | 文章发布时间     |
+| 名称     | 类型       | 说明             |
+| -------- | ---------- | ---------------- |
+| id       | number类型 | 文章id           |
+| title    | string类型 | 文章标题         |
+| intro    | string类型 | 文章文字内容截取 |
+| cover    | string类型 | 文章封面图片地址 |
+| type     | string类型 | 文章类型         |
+| read     | number类型 | 文章阅读次数     |
+| comments | number类型 | 评论条数         |
+| date     | string类型 | 文章发布时间     |
+
+
 
 #### 6、最新评论
 
-请求地址：/latest_comment
+请求地址：/index/latest_comment
 
 请求方式：get
 
 请求参数：无
 
-返回数据：（只返回 6 条）
+返回数据：（只返回6条）
 
-|   名称    |  类型  | 说明         |
-| :-------: | :----: | ------------ |
-| user_name | string | 用户名称     |
-|   date    | string | 评论时间     |
-|   intro   | string | 评论内容截取 |
+|  名称  |  类型  | 说明         |
+| :----: | :----: | ------------ |
+| author | string | 用户名称     |
+|  date  | string | 评论时间     |
+| intro  | string | 评论内容截取 |
 
-#### 7、焦点关注 ？
+
+
+#### 7、焦点关注 
+
+请求地址：/index/attention
+
+请求方式：get
+
+请求参数：无
+
+返回数据：（只返回7条）
+
+| 名称  | 类型       | 说明         |
+| ----- | ---------- | ------------ |
+| intro | string类型 | 文章内容截取 |
+
+
 
 #### 8、文章详细内容
 
-请求地址：/artitle
+请求地址：/index/artitle
 
 请求方式：get
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | string | 文章 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | string | 文章id |
 
 返回数据：
 
-| 名称    | 类型   | 说明                                                              |
-| ------- | ------ | ----------------------------------------------------------------- |
-| title   | string | 文章标题                                                          |
-| author  | string | 文章作者                                                          |
-| type    | string | 文章类型                                                          |
-| date    | string | 文章发布时间                                                      |
-| read    | number | 阅读次数                                                          |
-| comment | number | 评论条数                                                          |
-| content | string | 文章内容                                                          |
-| prev    | array  | 上一篇文章<br />id： 上一篇文章的 id<br />title：上一篇文章的标题 |
-| next    | array  | 下一篇文章<br />id： 下一篇文章的 id<br />title：下一篇文章的标题 |
+| 名称     | 类型   | 说明                                                         |
+| -------- | ------ | ------------------------------------------------------------ |
+| title    | string | 文章标题                                                     |
+| author   | string | 文章作者                                                     |
+| type     | string | 文章类型                                                     |
+| date     | string | 文章发布时间                                                 |
+| read     | number | 阅读次数                                                     |
+| comments | number | 评论条数                                                     |
+| content  | string | 文章内容                                                     |
+| prev     | array  | 上一篇文章<br />id： 上一篇文章的id<br />title：上一篇文章的标题 |
+| next     | array  | 下一篇文章<br />id： 下一篇文章的id<br />title：下一篇文章的标题 |
+
+
 
 #### 9、发表评论
 
-请求地址：/post_comment
+请求地址：/index/post_comment
 
 请求方式：post
 
@@ -197,84 +246,108 @@
 
 | 名称      | 类型   | 说明     |
 | --------- | ------ | -------- |
-| user_name | string | 用户名称 |
+| author    | string | 用户名称 |
 | content   | string | 评论内容 |
+| articleId | number | 文章id   |
 
-返回数据：‘发表成功’ ‘发表失败’
+返回数据：‘发表成功’   ‘发表失败’
+
+
 
 #### 10、评论列表
 
-请求地址：/get_comment
+请求地址：/index/get_comment
 
 请求方式：get
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | string | 文章 id |
+| 名称      | 类型   | 说明   |
+| --------- | ------ | ------ |
+| articleId | string | 文章id |
 
 返回数据：
 
-|   名称    |  类型  | 说明         |
-| :-------: | :----: | ------------ |
-| user_name | string | 用户名称     |
-|   date    | string | 评论时间     |
-|  content  | string | 评论完整内容 |
+|  名称   |  类型  | 说明         |
+| :-----: | :----: | ------------ |
+| author  | string | 用户名称     |
+|  date   | string | 评论时间     |
+| content | string | 评论完整内容 |
+
+
 
 ## 后台接口
 
 #### 1、用户登录
 
-请求地址：http://localhost:8000/admin/login
-网络地址: https://autumnfish.cn/big/admin/login
+请求地址：/admin/user/login
 
 请求方式：post
 
 请求参数：
 
-| 名称      | 类型   | 说明            |
-| --------- | ------ | --------------- |
-| user_name | string | 用户名（admin） |
-| password  | string | 密码(123456)    |
+| 名称     | 类型   | 说明            |
+| -------- | ------ | --------------- |
+| username | string | 用户名（admin） |
+| password | string | 密码(123456)    |
 
 返回数据：
 
-| 名称 |  类型  | 说明                                   |
-| :--: | :----: | -------------------------------------- |
-| msg  | string | 文字信息 ‘登录成功’ ‘用户名或密码出错’ |
+| 名称 |  类型  | 说明                                      |
+| :--: | :----: | ----------------------------------------- |
+| msg  | string | 文字信息  ‘登录成功’   ‘用户名或密码出错’ |
+
+
 
 #### 2、退出登录
 
-请求地址：http://localhost:8000/admin/logout
-网络地址: https://autumnfish.cn/big/admin/logout
+请求地址：/admin/user/logout
 
 请求方式：post
 
-请求参数：无
+请求参数：
 
 返回数据：无
 
+
+
 #### 3、获取用户信息
 
-请求地址：http://localhost:8000/admin/getuser
-网络地址: https://autumnfish.cn/big/admin/getuser
+请求地址：/admin/user/info
 
 请求方式：get
 
-请求参数：
+请求参数：无
 
 返回数据：
 
 |   名称   |  类型  | 说明         |
 | :------: | :----: | ------------ |
 | nickname | string | 用户昵称     |
-| user_pic | string | 用户图片地址 |
+| userPic  | string | 用户图片地址 |
 
-#### 4、文章数量统计
+#### 4、获取统计数据
 
-请求地址：http://localhost:8000/admin/article_count
-网络地址: https://autumnfish.cn/big/admin/article_count
+请求地址：/admin/data/info
+
+请求方式：get
+
+请求参数：无
+
+返回数据：
+
+|     名称     |  类型  | 说明         |
+| :----------: | :----: | ------------ |
+| totalArticle | number | 文章总数     |
+|  dayArticle  | number | 日新增文章数 |
+| totalComment | number | 总评论数     |
+|  dayComment  | number | 日新增评论数 |
+
+
+
+#### 5、日新增文章数量统计
+
+请求地址：/admin/data/article
 
 请求方式：get
 
@@ -282,75 +355,58 @@
 
 返回数据：
 
-|   名称    |  类型  | 说明                 |
-| :-------: | :----: | -------------------- |
-| all_count | number | 文章总数             |
-| day_count | number | 当天文章发布文章总数 |
-
-#### 5、评论数量统计
-
-请求地址：http://localhost:8000/admin/comment_count
-网络地址: https://autumnfish.cn/big/admin/comment_count
-
-请求方式：get
-
-请求参数：
-
-返回数据：
-
-|   名称    |  类型  | 说明             |
-| :-------: | :----: | ---------------- |
-| all_count | number | 评论总数         |
-| day_count | number | 当天发布评论总数 |
-
-#### 6、月新增文章数
-
-请求地址：http://localhost:8000/admin/month_article_count
-网络地址: https://autumnfish.cn/big/admin/month_article_count
-
-请求方式：get
-
-请求参数：
-
-返回数据：（返回 30 条）
-
-|   名称    |  类型  | 说明           |
-| :-------: | :----: | -------------- |
-|    day    | string | 日期           |
-| day_count | number | 当天新增文章数 |
-
-返回数据结构示例：
-
-```json
-[
-    {
-        "day":"2019-04-18",
-        "day_count":135
-    },
-    {
-        "day":"2019-04-19",
-        "day_count":145
-    },
-    {
-        "day":"2019-04-20",
-        "day_count":168
-    },
-	{
-        "day":"2019-04-21",
-        "day_count":110
-    },
-	{
-        "day":"2019-04-22",
-        "day_count":147
-    }
-    ......
-]
+```js
+{
+    "code": 200,
+    "msg": "获取成功",
+    "date": [
+        {
+            "date": "2019-05-20",
+            "count": 23
+        },
+        {
+            "date": "2019-05-21",
+            "count": 19
+        },
+        {
+            "date": "2019-05-22",
+            "count": 29
+        },
+        {
+            "date": "2019-05-23",
+            "count": 24
+        },
+        {
+            "date": "2019-05-24",
+            "count": 28
+        },
+        {
+            "date": "2019-05-25",
+            "count": 28
+        },
+        {
+            "date": "2019-05-26",
+            "count": 19
+        },
+        {
+            "date": "2019-05-27",
+            "count": 25
+        },
+        {
+            "date": "2019-05-28",
+            "count": 25
+        },
+        {
+            "date": "2019-7-30",
+            "count": 3
+        }
+    ]
+}
 ```
 
-#### 7、各类型文章数量统计
+#### 6、各类型文章数量统计
 
-请求地址：http://localhost:8000/admin/article_category_count
-网络地址: https://autumnfish.cn/big/admin/article_category_count
+请求地址：/admin/data/category
 
 请求方式：get
 
@@ -358,115 +414,70 @@
 
 返回数据：（有多少类型，就返回多少条）
 
-|   名称    |  类型  | 说明           |
-| :-------: | :----: | -------------- |
-|   type    | string | 文章类型       |
-| all_count | number | 该类型文章总数 |
+```js
+{
+    "code": 200,
+    "msg": "获取成功",
+    "date": [
+        {
+            "name": "爱旅行",
+            "articles": 41
+        },
+        {
+            "name": "爱生活",
+            "articles": 72
+        },
+        {
+            "name": "爱美食",
+            "articles": 36
+        },
+        {
+            "name": "爱运动",
+            "articles": 47
+        },
+        {
+            "name": "经济特区",
+            "articles": 33
+        }
+    ]
+}
+```
 
-#### 8、月文章访问量
 
-请求地址：http://localhost:8000/admin/article_category_visit
-网络地址: https://autumnfish.cn/big/admin/article_category_visit
 
-请求方式：post
+#### 7、日文章访问量
+
+请求地址：/admin/data/visit
+
+请求方式：get
 
 请求参数：
 
-返回数据：（返回最近 6 各月的，也就是 6 条）
-
-|   名称    |  类型  | 说明                                                                                    |
-| :-------: | :----: | --------------------------------------------------------------------------------------- |
-|   month   | string | 月份                                                                                    |
-| all_count | array  | 该月份各类型文章访问量<br />type：string，文章类型<br />count：number，该类型文章访问量 |
+返回数据：（返回最近1周的，也就是7条）
 
 返回数据结构示例：
 
 ```json
-[
-    {
-        "month":'1月',
-        "all_count":[
-            {
-             "type":"科技",
-             "count":237
-            },
-            {
-             "type":"经济",
-             "count":237
-            },
-            {
-             "type":"股市",
-             "count":237
-            },
-    		{
-             "type":"商品",
-             "count":237
-            },
-            {
-             "type":"外汇",
-             "count":237
-            }
-        ]
-    },
-    {
-        "month":'2月',
-        "all_count":[
-            {
-             "type":"科技",
-             "count":237
-            },
-            {
-             "type":"经济",
-             "count":237
-            },
-            {
-             "type":"股市",
-             "count":237
-            },
-    		{
-             "type":"商品",
-             "count":237
-            },
-            {
-             "type":"外汇",
-             "count":237
-            }
-        ]
-    },
-    {
-        "month":'三月',
-        "all_count":[
-            {
-             "type":"科技",
-             "count":237
-            },
-            {
-             "type":"经济",
-             "count":237
-            },
-            {
-             "type":"股市",
-             "count":237
-            },
-    		{
-             "type":"商品",
-             "count":237
-            },
-            {
-             "type":"外汇",
-             "count":237
-            }
-        ]
+{
+    "code": 200,
+    "msg": "日访问量统计数据获取成功",
+    "data": {
+        "2019-05-28": 13016,
+        "2019-05-27": 11503,
+        "2019-05-26": 9128,
+        "2019-05-25": 13155,
+        "2019-05-24": 12734,
+        "2019-05-23": 10714,
+        "2019-05-22": 16282
     }
-    ......
-
-]
+}
 ```
+
+
 
 #### 9、文章搜索
 
-请求地址：http://localhost:8000/admin/search
-网络地址: https://autumnfish.cn/big/admin/search
+请求地址：/admin/article/query
 
 请求方式：get
 
@@ -476,94 +487,166 @@
 | :-----: | :----: | -------------------------------------------- |
 |   key   | string | 搜索关键词，可以为空，为空返回某类型所有文章 |
 |  type   | string | 文章类型，可以为空，为空返回所有类型文章     |
-|  state  | string | 文章状态，草稿或者已发布                     |
-|  page   | number | 当前页，为空返回第 1 页                      |
-| perpage | number | 每页显示条数，为空默认每页 6 条              |
-|   id    | number | 文章 id，根据 id 查询时，其余参数可以不选择  |
+|  state  | string | 文章状态，草稿 或 已发布                     |
+|  page   | number | 当前页，为空返回第1页                        |
+| perpage | number | 每页显示条数，为空默认每页6条                |
 
 返回数据：
 
-| 名称  |  类型  | 说明                                                                                                                                                                                                                                                                                                                                                                         |
-| :---: | :----: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| pages | number | 总页数                                                                                                                                                                                                                                                                                                                                                                       |
-| page  | number | 当前页                                                                                                                                                                                                                                                                                                                                                                       |
-| data  | array  | 文章数据数组，其中每个成员包含字段：<br />id: number 类型，文章 id<br />title: string 类型，文章标题<br />intro: string 类型，文章文字内容截取<br />cover: string 类型，文章封面图片地址<br />type: string 类型，文章类型<br />read: number 类型，文章阅读次数<br />comment: number 类型，文章评论次数<br />date:string 类型， 文章发布时间<br />state:string 类型，文章状态 |
+| 名称  |  类型  | 说明                                                         |
+| :---: | :----: | ------------------------------------------------------------ |
+| pages | number | 总页数                                                       |
+| page  | number | 当前页                                                       |
+| data  | array  | 文章数据数组，其中每个成员包含字段：<br />id: number类型，文章id<br />title:  string类型，文章标题<br />intro: string类型，文章文字内容截取<br />cover: string类型，文章封面图片地址<br />type: string类型，文章类型<br />read: number类型，文章阅读次数<br />comment: number类型，文章评论次数<br />date:string类型， 文章发布时间<br />state:string类型，文章状态 |
+
+
 
 #### 10、发布文章
 
-请求地址：http://localhost:8000/admin/article_publish
-网络地址: https://autumnfish.cn/big/admin/article_publish
-
-请求方式：post
-
-请求参数：formData
-
-| 名称    | 类型   | 说明                   |
-| ------- | ------ | ---------------------- |
-| title   | string | 文章标题               |
-| cover   | file   | 文章封面图片           |
-| type    | number | 文章类型 id            |
-| date    | string | 日期                   |
-| content | string | 文章内容               |
-| state   | string | 文章状态(草稿或已发布) |
-
-返回数据：
-
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘发布成功’ ‘发布失败’ |
-
-#### 11、文章编辑
-
-请求地址：http://localhost:8000/admin/article_edit
-网络地址: https://autumnfish.cn/big/admin/article_edit
+请求地址：/admin/article/publish
 
 请求方式：post
 
 请求参数：
 
-| 名称    | 类型   | 说明         |
-| ------- | ------ | ------------ |
-| id      | number | 文章 id      |
-| title   | string | 文章标题     |
-| cover   | file   | 文章封面图片 |
-| type    | number | 文章类型 id  |
-| date    | string | 日期         |
-| content | string | 文章内容     |
+| 名称       | 类型   | 说明         |
+| ---------- | ------ | ------------ |
+| title      | string | 文章标题     |
+| cover      | file   | 文章封面图片 |
+| categoryId | number | 文章类型id   |
+| date       | string | 日期         |
+| content    | string | 文章内容     |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘修改成功’ ‘修改失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘发布成功’   ‘发布失败’ |
 
-#### 12、删除文章
 
-请求地址：http://localhost:8000/admin/article_delete
-网络地址: https://autumnfish.cn/big/admin/article_delete
+
+#### 11、根据id获取文章信息
+
+请求地址：/admin/article/search
 
 请求方式：get
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | number | 文章 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 文章id |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘删除成功’ ‘删除失败’ |
 
-#### 13、文章类别搜索
 
-请求地址：http://localhost:8000/admin/category_search
-网络地址: https://autumnfish.cn/big/admin/category_search
+| 名称       | 类型   | 说明         |
+| ---------- | ------ | ------------ |
+| id         | number | 文章id       |
+| title      | string | 文章标题     |
+| cover      | file   | 文章封面图片 |
+| categoryId | number | 文章类型id   |
+| date       | string | 日期         |
+| content    | string | 文章内容     |
+
+
+
+#### 11、文章编辑
+
+请求地址：/admin/article/edit
+
+请求方式：post
+
+请求参数：
+
+| 名称       | 类型   | 说明                   |
+| ---------- | ------ | ---------------------- |
+| id         | number | 文章id                 |
+| title      | string | 文章标题               |
+| cover      | file   | 文章封面图片(可以为空) |
+| categoryId | number | 文章类型id             |
+| date       | string | 日期                   |
+| content    | string | 文章内容               |
+
+返回数据：
+
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘修改成功’   ‘修改失败’ |
+
+
+
+#### 
+
+#### 12、删除文章
+
+请求地址：/admin/article/delete
+
+请求方式：get
+
+请求参数：
+
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 文章id |
+
+返回数据：
+
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘删除成功’   ‘删除失败’ |
+
+
+
+#### 13、所有文章类别
+
+请求地址：/admin/category/list
 
 请求方式：get
 
 请求参数：无
+
+返回数据：文章
+
+| 名称 |  类型  | 说明     |
+| :--: | :----: | -------- |
+|  id  | number | 类别     |
+| name | string | 类别名称 |
+| slug | string | 别名     |
+
+
+
+#### 14、新增文章类别
+
+请求地址：/admin/category/add
+
+请求方式：post
+
+请求参数：
+
+| 名称 | 类型   | 说明     |
+| ---- | ------ | -------- |
+| name | string | 类别名称 |
+| slug | string | 别名     |
+
+返回数据：
+
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘增加成功’   ‘增加失败’ |
+
+#### 15、根据id查询指定文章类别
+
+请求地址：/admin/category/search
+
+请求方式：get
+
+请求参数：id
+
+| 名称 | 类型   | 说明       |
+| ---- | ------ | ---------- |
+| id   | number | 文章类别id |
 
 返回数据：
 
@@ -573,30 +656,9 @@
 | name | string | 类别名称 |
 | slug | string | 别名     |
 
-#### 14、新增文章类别
+#### 16、编辑文章类别
 
-请求地址：http://localhost:8000/admin/category_add
-网络地址: https://autumnfish.cn/big/admin/category_add
-
-请求方式：post
-
-请求参数：
-
-| 名称 | 类型   | 说明     |
-| ---- | ------ | -------- |
-| name | string | 类别名称 |
-| slug | string | 别名     |
-
-返回数据：
-
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘增加成功’ ‘增加失败’ |
-
-#### 15、编辑文章类别
-
-请求地址：http://localhost:8000/admin/category_edit
-网络地址: https://autumnfish.cn/big/admin/category_edit
+请求地址：/admin/category/edit
 
 请求方式：post
 
@@ -604,122 +666,128 @@
 
 | 名称 | 类型   | 说明     |
 | ---- | ------ | -------- |
-| id   | number | 文章 id  |
+| id   | number | 类别id   |
 | name | string | 类别名称 |
 | slug | string | 别名     |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘编辑成功’ ‘编辑失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘编辑成功’   ‘编辑失败’ |
 
-#### 16、删除文章类别
 
-请求地址：http://localhost:8000/admin/category_delete
-网络地址: https://autumnfish.cn/big/admin/category_delete
+
+#### 17、删除文章类别
+
+请求地址：/admin/category/delete
 
 请求方式：post
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | number | 类别 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 文章id |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘删除成功’ ‘删除失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘删除成功’   ‘删除失败’ |
+
+
 
 #### 17、文章评论搜索
 
-请求地址：http://localhost:8000/admin/comment_search
-网络地址: https://autumnfish.cn/big/admin/comment_search
+请求地址：/admin/comment_search
 
 请求方式：get
 
 请求参数：
 
-|  名称   |  类型  | 说明                            |
-| :-----: | :----: | ------------------------------- |
-|  page   | number | 当前页，为空返回第 1 页         |
-| perpage | number | 每页显示条数，为空默认每页 6 条 |
+|  名称   |  类型  | 说明                          |
+| :-----: | :----: | ----------------------------- |
+|  page   | number | 当前页，为空返回第1页         |
+| perpage | number | 每页显示条数，为空默认每页6条 |
 
 返回数据：
 
 |  名称   |  类型  | 说明                     |
 | :-----: | :----: | ------------------------ |
-|   id    | number | 评论 id                  |
+|   id    | number | 评论id                   |
 | author  | string | 评论作者                 |
 | content | string | 评论内容                 |
-|   aid   | number | 对应文章 id              |
+|   aid   | number | 对应文章id               |
 |  title  | string | 对应文章标题             |
 |  date   | string | 评论发表时间             |
 |  state  | string | 评论状态 ‘批准’ ‘待审核’ |
 
+
+
 #### 18、评论审核通过
 
-请求地址：http://localhost:8000/admin/comment_pass
-网络地址: https://autumnfish.cn/big/admin/comment_pass
+请求地址：/admin/comment/pass
 
 请求方式：post
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | number | 评论 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 评论id |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘设置成功’ ‘设置失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘设置成功’   ‘设置失败’ |
+
+
 
 #### 19、评论审核不通过
 
-请求地址：http://localhost:8000/admin/comment_reject
-网络地址: https://autumnfish.cn/big/admin/comment_reject
+请求地址：/admin/comment/reject
 
 请求方式：post
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | number | 评论 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 评论id |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘设置成功’ ‘设置失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘设置成功’   ‘设置失败’ |
+
+
 
 #### 20、删除评论
 
-请求地址：http://localhost:8000/admin/comment_delete
-网络地址: https://autumnfish.cn/big/admin/comment_delete
+请求地址：/admin/comment/delete
 
 请求方式：post
 
 请求参数：
 
-| 名称 | 类型   | 说明    |
-| ---- | ------ | ------- |
-| id   | number | 评论 id |
+| 名称 | 类型   | 说明   |
+| ---- | ------ | ------ |
+| id   | number | 评论id |
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘删除成功’ ‘删除失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘删除成功’   ‘删除失败’ |
 
-#### 21、获取用户信息
 
-请求地址：http://localhost:8000/admin/userinfo_get
-网络地址: https://autumnfish.cn/big/admin/userinfo_get
+
+#### 21、获取用户详情
+
+请求地址：/admin/user/detail
 
 请求方式：get
 
@@ -732,17 +800,18 @@
 | username | string | 用户名称     |
 | nickname | string | 用户昵称     |
 |  email   | string | 用户邮箱     |
-| user_pic | string | 用户图片地址 |
+| userPic  | string | 用户图片地址 |
 | password | string | 用户密码     |
+
+
 
 #### 22、编辑用户信息
 
-请求地址：http://localhost:8000/admin/userinfo_edit
-网络地址: https://autumnfish.cn/big/admin/userinfo_edit
+请求地址：/admin/user/edit
 
 请求方式：post
 
-请求参数：使用 formdata 提交
+返回数据：
 
 |   名称   |  类型  | 说明         |
 | :------: | :----: | ------------ |
@@ -754,6 +823,7 @@
 
 返回数据：
 
-| 名称 |  类型  | 说明                           |
-| :--: | :----: | ------------------------------ |
-| msg  | string | 文字信息 ‘修改成功’ ‘修改失败’ |
+| 名称 |  类型  | 说明                              |
+| :--: | :----: | --------------------------------- |
+| msg  | string | 文字信息  ‘修改成功’   ‘修改失败’ |
+

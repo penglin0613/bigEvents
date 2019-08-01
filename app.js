@@ -1,30 +1,37 @@
-// 导入express
-const express = require('express')
-// 日志中间件
-const morgan = require('morgan')
-// cors中间件
-const cors= require('cors')
-// 导入路由
-const frontRouter = require('./router/frountRouter')
-const adminRouter = require('./router/adminRouter')
-// 实例化服务器对象
+const express = require("express")
+const cors = require("cors")
+const bodyParser = require("body-parser")
+const morgan = require("morgan")
+// 设置到全局对象上 
+global.reqlib = require('app-root-path').require;
+ 
+// 路由
+const adminRouter = require("./router/adminRouter")
+const indexRouter = require("./router/indexRouter")
+// 数据库
+const db = require("./db")
+
 const app = express()
-// 日志中间件
-app.use(morgan('tiny'))
-// cors
+
+// 中间件 - 跨域
 app.use(cors())
 
-// 托管静态资源
-app.use('/static',express.static('uploads'))
+// 中间件 - post数据解析
+app.use(bodyParser.urlencoded({ extended: false }))
 
+// 中间件 - 日志 最小模式输出
+app.use(morgan("tiny"))
 
-// 注册前台路由
-app.use('/', frontRouter)
-// 注册后台路由
-app.use('/admin', adminRouter)
+// 中间件 - 路由 - admin 
+app.use("/admin", adminRouter)
+// 中间件 - 路由 - index
+app.use("/index", indexRouter)
 
-
-// 开启监听
-app.listen(8000, () => {
-  console.log('app已启动,端口为8000')
+// 中间件 - 托管静态资源
+app.use(express.static('uploads'))
+ 
+db.sequelize.sync({ force: false }).then(() => {
+  app.listen(8080, () => {
+    console.log("开启成功: http://localhost:8080")
+  })
 })
