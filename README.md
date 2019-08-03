@@ -818,7 +818,7 @@
 | username | string | 用户名称     |
 | nickname | string | 用户昵称     |
 |  email   | string | 用户邮箱     |
-| user_pic | string | 用户图片地址 |
+| userPic  | string | 用户图片地址 |
 | password | string | 用户密码     |
 
 返回数据：
