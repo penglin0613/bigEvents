@@ -29,10 +29,22 @@ module.exports = {
           msg: "分类id不对，请检查"
         })
       }
+      let {state} = req.body
+      if(!state){
+        state='草稿'
+      }
       // 获取文章的其他信息
       const { title, date, content } = req.body
       // 获取封面
       const { filename: cover } = req.file
+      
+      // 判断类型是否匹配
+      if(['草稿','已发布'].indexOf(state)==-1){
+        return res.send({
+          code: 400,
+          msg: "state类型不对，请检查"
+        })
+      }
 
       // 创建新文章
       const addResult = await Article.create({
@@ -42,7 +54,7 @@ module.exports = {
         content,
         cover,
         isDelete: 0,
-        state: "草稿",
+        state,
         author: "管理员",
         read: 0
       })
@@ -234,7 +246,7 @@ module.exports = {
     const { key, type, state } = req.query
     let { page, perpage } = req.query
     // 查询状态判断
-    if (["草稿", "已发布"].indexOf(state) == -1) {
+    if (["草稿", "已发布",'',undefined].indexOf(state) == -1) {
       return res.send({
         code: 400,
         msg: "文章状态传递错误，请检查"
@@ -256,7 +268,10 @@ module.exports = {
     // 计算跳过的页码
     const offset = (page - 1) * perpage
     // 查询条件
-    let where = { state }
+    let where = {  }
+    if(state){
+      where['state'] = state
+    }
     // 查询关键字
     if (key) {
       where[Op.or] = [
@@ -279,10 +294,21 @@ module.exports = {
       let pageArticleRes = await Article.findAll({
         // 模糊查询
         where,
+        include: [
+          {
+            model: Category
+          }
+        ],
         // 分页
         limit: perpage,
         // 跳过页码
         offset
+      })
+      // 数据转换
+      pageArticleRes = JSON.parse(JSON.stringify(pageArticleRes))
+      // 处理分页数据
+      pageArticleRes.forEach(v=>{
+        v.category = v.category.name
       })
       // 总页数
       let totalArticleRes = await Article.findAll({
@@ -294,6 +320,7 @@ module.exports = {
         msg: "数据获取成功",
         data: {
           totalCount: totalArticleRes.length,
+          totalPage:Math.ceil(totalArticleRes.length/perpage),
           data: pageArticleRes
         }
       })

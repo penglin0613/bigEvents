@@ -13,7 +13,8 @@ const sequelize = new Sequelize(database, username, password, {
     // `timestamps` 字段指定是否将创建 `createdAt` 和 `updatedAt` 字段.
     // 该值默认为 true, 但是当前设定为 false
     timestamps: false,
-    engine: 'MYISAM', 
+    // 设置数据库定义的类型
+    engine: 'MYISAM'
   },
   // 打印sql语句
   logging:false

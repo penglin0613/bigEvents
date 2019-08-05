@@ -44,9 +44,15 @@ db.sequelize.sync({ force: true }).then(async () => {
     await db.Comment.bulkCreate(randomData(8000).Comment)
     // console.log( randomData(10000).Comment.length)
     await db.User.create(userData)
-    await fs.copyFileSync(path.join(__dirname,'./static/icon.jpg'),path.join(__dirname,'../uploads/icon.jpg'))
+    // 不存在文件夹就新建
+    if(!fs.existsSync('./uploads')){
+      fs.mkdirSync('./uploads')
+    }
+    fs.copyFileSync(path.join(__dirname,'./static/icon.jpg'),path.join(__dirname,'../uploads/icon.jpg'))
     // 移动图片
-    await console.log('初始化完毕！！');
+    setTimeout(() => {
+      console.log('搞定')
+    }, 0);
   } catch (error) {
     console.log(error)
   }
