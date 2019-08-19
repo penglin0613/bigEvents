@@ -26,7 +26,7 @@ function randomData(num) {
         date: "@now('year','yyyy')-@natural(1,7)-@datetime('dd')",
         time:'@time',
         articleId:"@natural(1,220)",
-        state:"待审核"
+        state:"已通过"
       }
     ]
   })

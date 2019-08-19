@@ -220,7 +220,7 @@ module.exports = {
       // 修改数据
       const result = await Article.update(
         {
-          isDelete: 1
+          isDelete: true
         },
         {
           where: {
@@ -230,12 +230,17 @@ module.exports = {
       )
       // res.send(result)
       if (result[0] == 1) {
-        res.send({
+        return res.send({
           code: 204,
           msg: "文章删除成功"
         })
       }
+      res.send({
+        code:400,
+        msg:'文章删除失败,请检查id'
+      })
     } catch (error) {
+      console.log(error)
       serverError(res)
     }
   },
@@ -259,6 +264,8 @@ module.exports = {
       perpage = 6
     }
     // 分页数据判断
+    page = parseInt(page)
+    perpage =parseInt(perpage)
     if (typeof page != "number" || typeof perpage != "number") {
       return res.send({
         code: 400,
@@ -289,11 +296,17 @@ module.exports = {
     if (type) {
       where["categoryId"] = type
     }
+    where['isDelete']=0
+    // 增加
     try {
       // 分页查询
       let pageArticleRes = await Article.findAll({
         // 模糊查询
         where,
+        // 按照时间的方式倒序排列
+        order:[
+          ['id', 'DESC'],
+        ],
         include: [
           {
             model: Category
@@ -309,6 +322,10 @@ module.exports = {
       // 处理分页数据
       pageArticleRes.forEach(v=>{
         v.category = v.category.name
+        if (v.cover.indexOf("htps://") == -1) {
+          v.cover = `${baseUrl}/${v.cover}`
+        }
+        delete v.isDelete
       })
       // 总页数
       let totalArticleRes = await Article.findAll({

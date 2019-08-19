@@ -1,5 +1,8 @@
 const { Comment, Article, Category, Sequelize, sequelize } = require("../db")
 const Op = Sequelize.Op
+// 导入基地址
+const { baseUrl } = reqlib("/config")
+
 
 const moment = require("moment")
 
@@ -63,6 +66,7 @@ module.exports = {
           msg: "文章id有误,请检查"
         })
       }
+      console.log(articleId)
       // 查询评论
       const commentRes = await Comment.findAll({
         where: {
@@ -76,7 +80,8 @@ module.exports = {
       })
       res.send({
         code: 200,
-        msg: "获取成功"
+        msg: "获取成功",
+        data:commentRes
       })
     } catch (error) {
       console.log(error)
@@ -347,6 +352,12 @@ module.exports = {
         ],
         attributes: { exclude: ["isDelete"] }
       })
+      if(!currentArticleRes){
+        return res.send({
+          code:400,
+          msg:'id有误,请检查'
+        })
+      }
       // 累加
       let read = currentArticleRes.read + 1
       // 累加
@@ -361,6 +372,10 @@ module.exports = {
         }
       )
       currentArticleRes = JSON.parse(JSON.stringify(currentArticleRes))
+      // 处理封面
+      if (currentArticleRes.cover.indexOf("htps://") == -1) {
+        currentArticleRes.cover = `${baseUrl}/${currentArticleRes.cover}`
+      }
       // 评论
       currentArticleRes.comments = currentArticleRes.comments.length
       // 分类
@@ -401,6 +416,7 @@ module.exports = {
         }
       })
     } catch (error) {
+      console.log(error)
       serverError(res)
     }
   }
