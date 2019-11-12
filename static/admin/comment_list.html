@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>评论列表</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.12.4.min.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="common_title">
+            评论列表
+        </div>
+        <div class="container-fluid common_con">
+            
+                <table class="table table-striped table-bordered table-hover mp20">
+                        <thead>
+                          <tr>
+                          
+                            <th>作者</th>
+                            <th>评论</th>
+                            <th>评论在</th>
+                            <th>提交于</th>
+                            <th>状态</th>
+                            <th class="text-center" width="100">操作</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                
+                
+                
+                
+                  <tr>
+                
+                    
+                      <td>小周</td>
+                      <td>这是一条测试评论，欢迎光临</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-04 12:00:00</td>
+                
+                    
+                      <td>已批准</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'rejected',1 );" class="btn btn-warning btn-xs">拒绝</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',1 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr class="danger">
+                
+                   
+                      <td>小右</td>
+                      <td>你好啊，交个朋友好吗？</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-06 14:10:00</td>
+                
+                    
+                      <td>待审核</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'approved',3 );" class="btn btn-info btn-xs">批准</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',3 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr class="danger">
+                
+                     
+                      <td>老周</td>
+                      <td>不好</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-09 22:22:00</td>
+                
+                    
+                      <td>待审核</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'approved',4 );" class="btn btn-info btn-xs">批准</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',4 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr class="danger">
+                
+                    
+                      <td>中周</td>
+                      <td>How are you?</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-09 18:22:00</td>
+                
+                    
+                      <td>待审核</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'approved',5 );" class="btn btn-info btn-xs">批准</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',5 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                    
+                      <td>小右</td>
+                      <td>I am fine thank you and you?</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-11 22:22:00</td>
+                
+                    
+                      <td>已批准</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'rejected',6 );" class="btn btn-warning btn-xs">拒绝</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',6 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                  
+                      <td>哈哈</td>
+                      <td>一针见血</td>
+                      <td>《世界，你好》</td>
+                      <td>2017-07-22 09:10:00</td>
+                
+                    
+                      <td>已批准</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'rejected',7 );" class="btn btn-warning btn-xs">拒绝</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',7 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                   
+                      <td>武秀英</td>
+                      <td>外影广条同取水权科速工与。矿身面却属次养导务作者用品油调。高石期品极放存斗一号口消别共去。</td>
+                      <td>《世界，你好》</td>
+                      <td>1970-03-15 11:31:50</td>
+                
+                    
+                      <td>已拒绝</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',8 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                   
+                      <td>胡娟</td>
+                      <td>采参什正面准观提干在易东统。走部系取团商机酸科往证和流物实则。入程用指学行利划影现清关织方。</td>
+                      <td>《第四篇示例文章》</td>
+                      <td>1970-03-23 14:16:57</td>
+                
+                    
+                      <td>已拒绝</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',9 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                     
+                      <td>邵艳</td>
+                      <td>国新研目心思力品家织通还如周气长多。话它思造约众系压程它过去全。必导则达发前何西最老四关向。</td>
+                      <td>《第一篇示例文章》</td>
+                      <td>1970-04-19 12:34:27</td>
+                
+                    
+                      <td>已拒绝</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',10 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                
+                
+                  <tr>
+                
+                    
+                      <td>唐军</td>
+                      <td>好联律物联使进很们有严这里月之。实养件矿商除政究定划必火起划六。内百那则变次引持只情车各地织持。</td>
+                      <td>《第四篇示例文章》</td>
+                      <td>1970-04-24 11:22:29</td>
+                
+                    
+                      <td>已批准</td>
+                    
+                
+                      <td class="text-center">
+                      
+                      
+                        <a href="javascript:editTr( 'rejected',11 );" class="btn btn-warning btn-xs">拒绝</a>
+                      
+                        
+                        <a href="javascript:editTr( 'trashed',11 );" class="btn btn-danger btn-xs">删除</a>
+                      </td>
+                  </tr>
+                
+                </tbody>
+                      </table>
+
+            
+
+            <div class="row text-center">
+            <ul class="pagination pagination-sm">
+                <li class="page-item first disabled"><a href="#" class="page-link">首页</a></li>
+                <li class="page-item prev disabled"><a href="#" class="page-link">上一页</a></li>
+                <li class="page-item active"><a href="#" class="page-link">1</a></li>
+                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                <li class="page-item"><a href="#" class="page-link">4</a></li>
+                <li class="page-item"><a href="#" class="page-link">5</a></li>
+                <li class="page-item"><a href="#" class="page-link">6</a></li>
+                <li class="page-item"><a href="#" class="page-link">7</a></li>
+                <li class="page-item next"><a href="#" class="page-link">下一页</a></li>
+                <li class="page-item last"><a href="#" class="page-link">尾页</a></li>
+            </ul>
+        </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 设置左侧菜单
+        $('#release_btn').click(function(){
+            window.parent.setMenu(0,0);
+        })
+    </script>
+
+</body>
+
+</html>

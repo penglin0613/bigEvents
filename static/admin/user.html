@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章列表</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.12.4.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="common_title">
+            用户信息修改
+        </div>
+        <div class="container-fluid common_con">
+            <form class="form-horizontal article_form">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="username" class="form-control username" id="inputEmail3" value="李思思">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="nickname" class="form-control nickname" id="inputEmail3" value="思思">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="email" class="form-control email" id="inputEmail3"
+                            value="lisisi@126.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
+                    <div class="col-sm-10">
+                        <img src="images/2.jpg" alt="" class="user_pic">
+                        <input style="display: none" name="userPic" type="file" id="exampleInputFile">
+                        <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
+                        <br>
+                        <label for="exampleInputFile">
+                            <img src="./images/uploads_icon.jpg" style="height: 50px;" alt="">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
+                    <div class="col-sm-4">
+                        <input type="password" name="password" class="form-control password" id="inputEmail3"
+                            value="12345678">
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success btn-edit">修改</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 入口函数
+        $(function () {
+            // 需求: 头像预览
+            //1.给选择文件这个按钮设置一个值改变事件.
+            $('#exampleInputFile').on('change', function () {
+                //2.通过this.files[0]来获取你选中的头像文件.
+                var icon = this.files[0];
+                //3.通过URL.createObjectURL来创建一个url
+                var url = URL.createObjectURL(icon);
+                //4.把这个创建处理的url赋值给预览用的img的src属性
+                $('.user_pic').attr('src', url);
+            });
+
+            //需求:一进到个人中心页面,显示当前登录的用户的信息到对应的标签上.
+            //1.一进到页面发送ajax请求,获取当前登录的用户的信息.
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:80/api/v1/admin/user/detail',
+                success: function (backData) {
+                    if (backData.code == 200) {
+                        //2.把获取的数据显示在对应的标签中.
+                        // $('input.username').val(backData.data.username);
+                        // $('input.nickname').val(backData.data.nickname);
+                        // $('input.email').val(backData.data.email);
+                        // $('input.password').val(backData.data.password);
+
+                        //上面的4句代码差不多,可以优化
+                        for (var key in backData.data) {
+                            //key 
+                            $('input.' + key).val(backData.data[key]);
+                        }
+
+
+                        $('img.user_pic').attr('src', backData.data.userPic);
+                    }
+                }
+            });
+
+
+
+            //需求: 点击修改按钮,完成用户信息的修改
+            //1.给修改按钮设置点击事件.
+            $('.btn-edit').on('click', function (e) {
+                e.preventDefault();
+                //2.创建formData对象
+                var fd = new FormData($('form')[0]);
+                //  需要form表单dom元素
+                //  form表单获取值得标签都要设置name属性,name属性的值和接口键保持一致.
+                //3.发送ajax请求,完成修改
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:80/api/v1/admin/user/edit',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function (backData) {
+                        if (backData.code == 200) {
+                            //4.修改成功了显示新数据
+                            alert("修改成功了");
+                            //第一种方式: 刷新父页面显示一下新的用户信息.
+                            //parent.window.location.reload();
+
+                            //第二种方式:发送ajax请求,获取新的用户信息, 直接赋值给父页面对应的标签上.
+                            $.ajax({
+                                url: 'http://localhost:80/api/v1/admin/user/info',
+                                success: function (backData) {
+                                    if (backData.code == 200) {
+                                        //2.把对应的信息填入到对应的页面标签中.
+                                        parent.$('.user_info>img').attr('src',
+                                            backData
+                                            .data.userPic);
+                                        parent.$('.user_info>span').html(
+                                            '欢迎&nbsp;&nbsp;' + backData.data
+                                            .nickname);
+                                        parent.$('.user_center_link>img').attr(
+                                            'src',
+                                            backData.data.userPic);;
+                                    }
+                                }
+                            });
+
+
+                        }
+                    }
+                });
+            })
+
+        });
+    </script>
+</body>
+
+</html>

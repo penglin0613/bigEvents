@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文章列表</title>
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link type="text/css" rel="stylesheet" href="js/jedate/css/jedate.css">
+    <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/jedate/js/jedate.js"></script>
+    <script src="js/tinymce/js/tinymce/tinymce.min.js"></script>
+    <script src="js/tinymce/js/tinymce_setup.js"></script>
+    <!-- 导入moment.js文件 -->
+    <script src="./js/moment.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="common_title">
+            写文章
+        </div>
+        <div class="container-fluid common_con">
+            <form class="form-horizontal article_form">
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="title" class="form-control" id="inputEmail3" placeholder="文章标题">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
+                    <div class="col-sm-10">
+                        <img src="./images/2.jpg" style="height:120px;" alt="">
+                        <input type="file" name="cover" id="exampleInputFile">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="categoryId" id="article_category">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">发布时间：</label>
+                    <div class="col-sm-4">
+
+                        <div class="input-group">
+                            <input type="text" name="date" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"
+                                    onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
+                                        class="iconfont icon-icondate"></i></button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputEmail3" class="col-sm-2 control-label">文章内容：</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" id="rich_content"  placeholder="文章内容">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda fugiat illo nihil molestias ab. Laborum eius non atque, totam sapiente quae obcaecati assumenda ratione inventore pariatur maiores, qui libero delectus.
+                            </textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-success btn-release">发布</button>
+                        <button type="submit" class="btn btn-default">存为草稿</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 引入模板引擎js文件 -->
+    <script src="./js/template-web.js"></script>
+    <!-- 准备一个 文章分类 模板 -->
+    <script id="cateList" type="text/html">
+        {{each data v}}
+        <option value='{{v.id}}'>{{v.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        // 入口函数
+        $(function () {
+            //需求: 头像预览
+            //1.给选择文件的标签设置一个值改变实践.change
+            $('#exampleInputFile').on('change',function(){
+                //2.通过this.files[0]拿到你刚才选中的文件,
+                var icon  = this.files[0];
+                //3.创建一个url.
+                var url = URL.createObjectURL(icon);
+                //4.把这个url交给img
+                $(this).prev().attr('src',url);
+            });
+
+
+            // 需求: 一进到页面,就获取真实的文章分类数据,通过模板引擎渲染到页面.
+            //1.一进到页面发送ajax获取所有的文章分类.
+            $.ajax({
+                type: 'get',
+                url: 'http://localhost:80/api/v1/admin/category/list',
+                success: function (backData) {
+                    //console.log(backData);
+                    if (backData.code == 200) {
+                        //2.通过模板引擎渲染到筛选按钮 左边的下拉菜单中.
+                        var resHtml = template('cateList', backData);
+                        $('#article_category').html(resHtml);
+                    }
+                }
+            });
+
+            //需求:页面一进来就显示当前的系统时间.
+            var str = moment().format('YYYY-MM-DD');
+            $('#dateinput').val(str);
+
+
+            //需求: 发布文章
+            //1.给发布按钮设置点击事件.
+            $('.btn-release').on('click',function(e){
+                e.preventDefault();
+                //2.创建formData对象.
+                var fd = new FormData($('form')[0]);
+                //  发布的文章内容是富文本编辑器里面的, 所以要追加到formData中去. 
+                fd.append('content',tinyMCE.activeEditor.getContent());
+                //  文章状态为已发布,也要追加到formData中去
+                fd.append('state','已发布');
+                //3.发送ajax请求,完成发布
+                $.ajax({
+                    type:'post',
+                    url:'http://localhost:80/api/v1/admin/article/publish',
+                    contentType:false,
+                    processData:false,
+                    data:fd,
+                    success:function(backData){
+                        if(backData.code == 200){
+                            alert('发布成功!');
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>

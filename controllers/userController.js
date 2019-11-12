@@ -1,4 +1,8 @@
 const { User } = require("../db")
+// 导入配置
+const config = require('../config/index')
+// 引入jwt token工具
+const JwtUtil = require('../utils/jwt');
 
 // 导入fs
 const fs = require("fs")
@@ -28,11 +32,17 @@ module.exports = {
           msg: "用户名或密码错误"
         })
       }
+       // 登陆成功，添加token验证
+       let jwt = new JwtUtil(username);
+       let token = jwt.generateToken();
+
       res.send({
         code: 200,
-        msg: "登录成功"
+        msg: "登录成功",
+        token
       })
     } catch (error) {
+      console.log(error)
       serverError(res)
     }
   },
@@ -53,7 +63,7 @@ module.exports = {
         attributes: ["nickname", "userPic"]
       })
       userRes = JSON.parse(JSON.stringify(userRes))
-      userRes.userPic = `http://localhost:8080/${userRes.userPic}`
+      userRes.userPic = `${config.baseUrl}:${config.port}/${userRes.userPic}`
       res.send({
         code: 200,
         msg: "获取成功",
@@ -73,7 +83,7 @@ module.exports = {
         attributes: ["nickname", "userPic", "email", "password", "username"]
       })
       userRes = JSON.parse(JSON.stringify(userRes))
-      userRes.userPic = `http://localhost:8080/${userRes.userPic}`
+      userRes.userPic = `${config.baseUrl}:${config.port}/${userRes.userPic}`
       res.send({
         code: 200,
         msg: "获取成功",

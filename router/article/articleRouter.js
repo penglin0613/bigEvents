@@ -93,7 +93,7 @@ router.post("/edit", typeCheck,[
 
 
 // 注册路由 - 删除文章
-router.get('/delete',[
+router.use('/delete',[
   check('id').not().isEmpty()
 ],errorMsg,articleController._delete)
 

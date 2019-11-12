@@ -1,7 +1,11 @@
 const { Comment, Article, Category, Sequelize, sequelize } = require("../db")
 const Op = Sequelize.Op
+// 导入配置
+const config = require('../config/index')
 // 导入基地址
 const { baseUrl } = reqlib("/config")
+// 获取转义的工具函数
+const {html_decode} = reqlib("/utils/htmlFmt");
 
 
 const moment = require("moment")
@@ -36,7 +40,8 @@ module.exports = {
       await Comment.create({
         author,
         content,
-        date: moment().format("YYYY-MM-DD HH:mm:ss"),
+        date: moment().format("YYYY-MM-DD"),
+        time: moment().format("HH:mm:ss"),
         state: "待审核",
         articleId
       })
@@ -154,7 +159,7 @@ module.exports = {
       pageArticleRes.forEach(v => {
         v.comments = v.comments.length
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `http://localhost:8080/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
         }
         // 类型
         v.category = v.category.name
@@ -198,13 +203,13 @@ module.exports = {
   async hotpic(req, res) {
     try {
       const picRes = await Article.findAll({
-        order: sequelize.random(),
+        order:sequelize.random(),
         limit: 5,
-        attributes: ["cover"]
+        attributes: ["cover","id","title"]
       })
       picRes.forEach(v => {
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `http://localhost:8080/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
         }
       })
       res.send({
@@ -222,7 +227,7 @@ module.exports = {
       const rankRes = await Article.findAll({
         order: [["read", "DESC"]],
         limit: 7,
-        attributes: ["title"]
+        attributes: ["title","id"]
       })
       res.send({
         code: 200,
@@ -257,13 +262,21 @@ module.exports = {
       latestRes.forEach(v => {
         // 评论数
         v.comments = v.comments.length
+        v.content = html_decode(v.content);
+        console.log(v.content);
+        const index = v.content.indexOf("</p>");
+        console.log(index);
         // 简略信息
-        v.intro = v.content.substring(0, 20) + "..."
+        if(index==-1){
+          v.intro = v.content.substring(0,20)+'...'
+        }else{
+          v.intro =  v.content.substring(0, index) + "..."
+        }
         // 删除内容
         delete v.content
         // 处理封面
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `http://localhost:8080/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
         }
         // 处理分类名
         v.category = v.category.name
@@ -372,6 +385,7 @@ module.exports = {
         }
       )
       currentArticleRes = JSON.parse(JSON.stringify(currentArticleRes))
+      currentArticleRes.content = html_decode(currentArticleRes.content);
       // 处理封面
       if (currentArticleRes.cover.indexOf("htps://") == -1) {
         currentArticleRes.cover = `${baseUrl}/${currentArticleRes.cover}`
@@ -380,6 +394,7 @@ module.exports = {
       currentArticleRes.comments = currentArticleRes.comments.length
       // 分类
       currentArticleRes.category = currentArticleRes.category.name
+      // 内容
       // 查找上一个
       const prev = await Article.findOne({
         where: {

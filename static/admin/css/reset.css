@@ -1,0 +1,44 @@
+body,ul,h1,h2,h3,h4,h5,h6,p{
+    margin: 0;
+    padding: 0;
+}
+h1,h2,h3,h4,h5,h6{
+    font-size:100%;
+    font-weight:normal;
+}
+a{
+    text-decoration:none;
+    /* 点击a标签显示透明色，不设置会显示蓝色 */
+    -webkit-tap-highlight-color:transparent;
+}
+
+a:link,a:visited,a:hover,a:active{
+    text-decoration:none; 
+}
+
+
+ul{
+    list-style:none;
+}
+img{
+    border:0px;
+}
+
+/* 清除浮动，解决margin-top塌陷 */
+.clearfix:before,.clearfix:after{
+    content:'';
+    display:table;    
+}
+.clearfix:after{
+    clear:both;
+}
+.clearfix{
+    zoom:1;
+}
+
+.fl{
+    float:left;
+}
+.fr{
+    float:right;
+}

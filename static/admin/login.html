@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>大事件-后台登录页</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <!-- 引入bootstrap的css文件 -->
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+  </head>
+
+  <body>
+    <div class="main_wrap">
+      <div class="header">
+        <a href="#" class="logo"><img src="images/logo.png" alt=""/></a>
+        <div class="copyright">
+          CopyRight © 2019 深圳百秀信息技术股份有限公司<br />All Rights Reserved
+        </div>
+      </div>
+
+      <div class="login_form_con">
+        <div class="login_title"></div>
+        <form class="login_form">
+          <i class="iconfont icon-user"></i>
+          <i class="iconfont icon-key"></i>
+          <input type="text" class="input_txt" placeholder="邮箱/手机号" />
+          <input type="password" class="input_pass" placeholder="密码" />
+          <input type="submit" class="input_sub" value="登 录" />
+        </form>
+      </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div
+      class="modal fade"
+      id="myModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+              关闭
+            </button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 引入jq文件 -->
+    <script src="./js/jquery-1.12.4.min.js"></script>
+    <!-- 引入bootstrap的js文件 -->
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+      // 入口函数
+      $(function() {
+        // 1.给登录按钮一个点击事件.
+        $(".input_sub").on("click", function(e) {
+          // ​登录按钮是一个form表单中的submit, 所以要去掉他的默认跳转.
+          e.preventDefault();
+          // 2.获取用户输入的用户名和密码, 去掉前后空格  trim()
+          var username = $(".input_txt")
+            .val()
+            .trim(); //用户名
+          var password = $(".input_pass")
+            .val()
+            .trim(); //密码
+          // 3.判断是否为空,
+          if (username == "" || password == "") {
+            // ​如果为空不要继续,如果不为空就继续
+            //alert('账号或者密码为空,请重新输入!');
+            //使用模态框
+            $(".modal-body").text("账号或者密码为空,请重新输入!");
+            $("#myModal").modal({
+              keyboard: true //模态框显示的时候,可以按esc键隐藏模态框
+            });
+            return;
+          }
+          // 4.发送ajax请求,判断账号密码是否正确.
+          $.ajax({
+            type: "post",
+            url: "http://localhost:80/api/v1/admin/user/login",
+            data: {
+              username: username,
+              password: password
+            },
+            success: function(backData) {
+              if (backData.code == 200) {
+                // 保存token
+                window.localStorage.setItem("token",backData.token);
+                //登录成功,跳转到首页
+                window.location.href = "index.html";
+              } else {
+                //alert('账号或者密码错误!');
+                //使用模态框
+                $(".modal-body").text("账号或者密码错误!");
+                $("#myModal").modal({
+                  keyboard: true //模态框显示的时候,可以按esc键隐藏模态框
+                });
+              }
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
