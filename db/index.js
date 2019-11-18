@@ -26,7 +26,7 @@ const Article = ArticleModel(sequelize, Sequelize);
 const User = UserModel(sequelize, Sequelize);
 
 // 定义关联 分类 ->文章 一对多
-// console.log(Category.hasMany)
+// // console.log(Category.hasMany)
 Category.hasMany(Article)
 Article.belongsTo(Category)
 

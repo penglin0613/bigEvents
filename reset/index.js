@@ -42,7 +42,7 @@ db.sequelize.sync({ force: true }).then(async () => {
     await db.Category.bulkCreate(categoryData)
     await db.Article.bulkCreate(articleData)
     await db.Comment.bulkCreate(randomData(8000).Comment)
-    // console.log( randomData(10000).Comment.length)
+    // // console.log( randomData(10000).Comment.length)
     await db.User.create(userData)
     // 不存在文件夹就新建
     if(!fs.existsSync('./uploads')){
@@ -51,10 +51,10 @@ db.sequelize.sync({ force: true }).then(async () => {
     fs.copyFileSync(path.join(__dirname,'./static/icon.jpg'),path.join(__dirname,'../uploads/icon.jpg'))
     // 移动图片
     setTimeout(() => {
-      console.log('搞定')
+      // console.log('搞定')
     }, 0);
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
-  // console.log(res);
+  // // console.log(res);
 })

@@ -41,7 +41,7 @@ module.exports = {
       const { title, date } = req.body;
       let { content } = req.body;
       content = html_encode(content);
-      console.log(content);
+      // console.log(content);
       // 获取封面
       const { filename: cover } = req.file;
 
@@ -72,7 +72,7 @@ module.exports = {
       });
     } catch (error) {
       serverError(res);
-      console.log(error);
+      // console.log(error);
     }
   },
   // 根据id获取文章
@@ -225,7 +225,7 @@ module.exports = {
 
       // 获取最新的值
     } catch (error) {
-      console.log(res);
+      // console.log(res);
       serverError(res);
     }
   },
@@ -270,7 +270,7 @@ module.exports = {
         msg: "文章删除失败,请检查id"
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       serverError(res);
     }
   },

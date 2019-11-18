@@ -804,7 +804,7 @@ baseUrl:'http://localhost'
 
 #### 8、文章详细内容
 
-请求地址：/index/artitle
+请求地址：/index/article
 
 请求方式：get
 

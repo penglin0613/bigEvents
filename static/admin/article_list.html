@@ -316,7 +316,7 @@
                         perpage: 5
                     },
                     success: function (backData) {
-                        //console.log(backData);
+                        //// console.log(backData);
                         //4.把这些文章通过模板引擎渲染到页面
                         var resHtml = template('articleList', backData);
                         $('tbody').html(resHtml);
@@ -365,7 +365,7 @@
                 type: 'get',
                 url: 'http://localhost:80/api/v1/admin/category/list',
                 success: function (backData) {
-                    //console.log(backData);
+                    //// console.log(backData);
                     if (backData.code == 200) {
                         //2.通过模板引擎渲染到筛选按钮 左边的下拉菜单中.
                         var resHtml = template('cateList', backData);
@@ -386,9 +386,9 @@
                 visiblePages: 5, //可见页签数
                 //什么时候执行这个方法. 单击页签的时候会触发
                 onPageClick: function (event, page) {
-                    console.log('呵呵');
-                    //console.log(event);//点击的触发事件
-                    //console.log(page); //当前点击的页签的页码数.
+                    // console.log('呵呵');
+                    //// console.log(event);//点击的触发事件
+                    //// console.log(page); //当前点击的页签的页码数.
                     getData(page, cateType, cateState);
                 }
             }

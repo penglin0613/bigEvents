@@ -42,7 +42,7 @@ module.exports = {
         token
       })
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       serverError(res)
     }
   },
@@ -127,7 +127,7 @@ module.exports = {
       // 删除文件
       fs.unlinkSync(path.join(__dirname, "../uploads/", userRes.userPic))
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       serverError(res)
     }
   }

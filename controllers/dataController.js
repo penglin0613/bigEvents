@@ -89,7 +89,7 @@ module.exports = {
         date: categoryRes
       })
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       serverError(res)
     }
   },

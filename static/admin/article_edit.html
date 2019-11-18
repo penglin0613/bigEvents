@@ -95,7 +95,7 @@
                 type: 'get',
                 url: 'http://localhost:80/api/v1/admin/category/list',
                 success: function (backData) {
-                    //console.log(backData);
+                    //// console.log(backData);
                     if (backData.code == 200) {
                         //2.通过模板引擎渲染到筛选按钮 左边的下拉菜单中.
                         var resHtml = template('cateList', backData);

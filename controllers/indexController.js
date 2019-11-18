@@ -1,27 +1,47 @@
-const { Comment, Article, Category, Sequelize, sequelize } = require("../db")
-const Op = Sequelize.Op
+const { Comment, Article, Category, Sequelize, sequelize } = require("../db");
+const Op = Sequelize.Op;
 // 导入配置
-const config = require('../config/index')
+const config = require("../config/index");
 // 导入基地址
-const { baseUrl } = reqlib("/config")
+const { baseUrl } = reqlib("/config");
 // 获取转义的工具函数
-const {html_decode} = reqlib("/utils/htmlFmt");
+const { html_decode } = reqlib("/utils/htmlFmt");
 
-
-const moment = require("moment")
+const moment = require("moment");
 
 const serverError = res => {
   res.send({
     code: 500,
     msg: "服务器内部错误"
-  })
+  });
+};
+
+// 解析文本的函数
+function formatIntro(v,delContent) {
+  // 处理文章内容
+  v.content = html_decode(v.content);
+  const index = v.content.indexOf("</p>");
+  // 简略信息
+  if (index == -1) {
+    v.intro = v.content.substring(0, 20) + "...";
+  } else {
+    v.intro = v.content.substring(0, index) + "...";
+  }
+  if (v.intro.length > 20) {
+    v.intro = v.intro.substring(0, 20) + "...";
+  }
+  // console.log(v.intro)
+  // 删除内容
+  if(delContent){
+    delete v.content;
+  }
 }
 
 module.exports = {
   // 发表评论
   async post_comment(req, res) {
     // 获取数据
-    const { author, content, articleId } = req.body
+    const { author, content, articleId } = req.body;
     // 判断数据
     try {
       // 判断文章id
@@ -29,12 +49,12 @@ module.exports = {
         where: {
           id: articleId
         }
-      })
+      });
       if (!articleRes) {
         return res.send({
           code: 400,
           msg: "文章id有误，请检查"
-        })
+        });
       }
       // 发表评论
       await Comment.create({
@@ -44,34 +64,38 @@ module.exports = {
         time: moment().format("HH:mm:ss"),
         state: "待审核",
         articleId
-      })
+      });
       res.send({
         code: 201,
         msg: "发表成功"
-      })
+      });
     } catch (error) {
-      serverError(res)
+      serverError(res);
     }
   },
   // 评论列表
   async get_comment(req, res) {
     // 获取文章id
-    const { articleId } = req.query
+    const { articleId } = req.query;
     try {
       // 判断文章是否存在
       const articleRes = await Article.findOne({
         where: {
           id: articleId
-        }
-      })
+        },
+        order: [
+          // 根据id倒序
+          ["id", "DESC"]
+        ]
+      });
       // id异常提示
       if (!articleRes) {
         return res.send({
           code: 400,
           msg: "文章id有误,请检查"
-        })
+        });
       }
-      console.log(articleId)
+      // console.log(articleId)
       // 查询评论
       const commentRes = await Comment.findAll({
         where: {
@@ -82,42 +106,42 @@ module.exports = {
           // 根据id倒序
           ["id", "DESC"]
         ]
-      })
+      });
       res.send({
         code: 200,
         msg: "获取成功",
-        data:commentRes
-      })
+        data: commentRes
+      });
     } catch (error) {
-      console.log(error)
-      serverError(res)
+      // console.log(error)
+      serverError(res);
     }
   },
   // 文章搜索
   async search(req, res) {
     //   res.send('/query')
     // 数据获取
-    const { key, type } = req.query
-    let { page, perpage } = req.query
-    page = parseInt(page)
-    perpage = parseInt(perpage)
+    const { key, type } = req.query;
+    let { page, perpage } = req.query;
+    page = parseInt(page);
+    perpage = parseInt(perpage);
     if (!page) {
-      page = 1
+      page = 1;
     }
     if (!perpage) {
-      perpage = 6
+      perpage = 6;
     }
     // 分页数据判断
     if (typeof page != "number" || typeof perpage != "number") {
       return res.send({
         code: 400,
         msg: "页码，或者页容量类型错误"
-      })
+      });
     }
     // 计算跳过的页码
-    const offset = (page - 1) * perpage
+    const offset = (page - 1) * perpage;
     // 查询条件
-    let where = { isDelete: 0 }
+    let where = { isDelete: 0, state: "已发布" };
     // 查询关键字
     if (key) {
       where[Op.or] = [
@@ -129,11 +153,11 @@ module.exports = {
             [Op.substring]: key
           }
         }
-      ]
+      ];
     }
     // 查询类型
     if (type) {
-      where["categoryId"] = type
+      where["categoryId"] = type;
     }
     try {
       // 分页查询
@@ -153,22 +177,29 @@ module.exports = {
         limit: perpage,
         // 跳过页码
         offset
-      })
+      });
       // 处理评论个数
-      pageArticleRes = JSON.parse(JSON.stringify(pageArticleRes))
+      pageArticleRes = JSON.parse(JSON.stringify(pageArticleRes));
       pageArticleRes.forEach(v => {
-        v.comments = v.comments.length
+        // 处理评论
+        v.comments = v.comments.length;
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`;
         }
         // 类型
-        v.category = v.category.name
-      })
+        v.category = v.category.name;
+        // 内容
+        // 简略信息
+        // v.intro = v.content.substring(0, 20) + "...";
+        // // 删除内容
+        // delete v.content;
+        formatIntro(v,false);
+      });
       // 总页数
       let totalArticleRes = await Article.findAll({
         // 模糊查询
         where
-      })
+      });
       res.send({
         code: 200,
         msg: "数据获取成功",
@@ -176,10 +207,10 @@ module.exports = {
           totalCount: totalArticleRes.length,
           data: pageArticleRes
         }
-      })
+      });
     } catch (error) {
-      // console.log(error);
-      serverError(res)
+      // // console.log(error);
+      serverError(res);
     }
     // res.send("/search")
   },
@@ -189,36 +220,36 @@ module.exports = {
     try {
       const categoryRes = await Category.findAll({
         attributes: { exclude: ["slug"] }
-      })
+      });
       res.send({
         code: 200,
         msg: "获取成功",
         data: categoryRes
-      })
+      });
     } catch (error) {
-      serverError(res)
+      serverError(res);
     }
   },
   // 热点图
   async hotpic(req, res) {
     try {
       const picRes = await Article.findAll({
-        order:sequelize.random(),
+        order: sequelize.random(),
         limit: 5,
-        attributes: ["cover","id","title"]
-      })
+        attributes: ["cover", "id", "title"]
+      });
       picRes.forEach(v => {
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`;
         }
-      })
+      });
       res.send({
         code: 200,
         msg: "获取成功",
         data: picRes
-      })
+      });
     } catch (error) {
-      serverError(res)
+      serverError(res);
     }
   },
   // 文章热门排行
@@ -227,15 +258,15 @@ module.exports = {
       const rankRes = await Article.findAll({
         order: [["read", "DESC"]],
         limit: 7,
-        attributes: ["title","id"]
-      })
+        attributes: ["title", "id"]
+      });
       res.send({
         code: 200,
         msg: "获取成功",
         data: rankRes
-      })
+      });
     } catch (error) {
-      serverError(res)
+      serverError(res);
     }
   },
   // 最新资讯
@@ -243,7 +274,8 @@ module.exports = {
     try {
       let latestRes = await Article.findAll({
         where: {
-          isDelete: 0
+          isDelete: 0,
+          state: "已发布"
         },
         order: [["id", "DESC"]],
         limit: 5,
@@ -256,64 +288,54 @@ module.exports = {
           }
         ],
         attributes: { exclude: ["isDelete"] }
-      })
+      });
       // 处理数据
-      latestRes = JSON.parse(JSON.stringify(latestRes))
+      latestRes = JSON.parse(JSON.stringify(latestRes));
       latestRes.forEach(v => {
         // 评论数
-        v.comments = v.comments.length
-        v.content = html_decode(v.content);
-        console.log(v.content);
-        const index = v.content.indexOf("</p>");
-        console.log(index);
-        // 简略信息
-        if(index==-1){
-          v.intro = v.content.substring(0,20)+'...'
-        }else{
-          v.intro =  v.content.substring(0, index) + "..."
-        }
-        // 删除内容
-        delete v.content
+        v.comments = v.comments.length;
+        // 调用处理intro的函数
+        formatIntro(v);
         // 处理封面
         if (v.cover.indexOf("https://") == -1) {
-          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`
+          v.cover = `${config.baseUrl}:${config.port}/${v.cover}`;
         }
         // 处理分类名
-        v.category = v.category.name
-      })
+        v.category = v.category.name;
+      });
       res.send({
         code: 200,
         msg: "获取成功",
         data: latestRes
-      })
+      });
     } catch (error) {
-      console.log(error)
-      serverError(res)
+      // console.log(error)
+      serverError(res);
     }
   },
   // 最新评论
   async latest_comment(req, res) {
     try {
-      let latestRes = await Comment.findAll({
-        order: [["id", "DESC"]],
-        limit: 6
-      })
+      let latestRes = await Comment.findAll();
       // 处理数据
-      latestRes = JSON.parse(JSON.stringify(latestRes))
+      latestRes = JSON.parse(JSON.stringify(latestRes));
       latestRes.forEach(v => {
         // 简略信息
-        v.intro = v.content.substring(0, 20) + "..."
+        v.intro = v.content.substring(0, 20) + "...";
         // 删除内容
-        delete v.content
+        delete v.content;
+      })
+      latestRes.sort((a,b)=>{
+        return  moment(b.date).valueOf() - moment(a.date).valueOf()
       })
       res.send({
         code: 200,
         msg: "获取成功",
-        data: latestRes
-      })
+        data: latestRes.slice(0,6)
+      });
     } catch (error) {
-      console.log(error)
-      serverError(res)
+      // console.log(error)
+      serverError(res);
     }
   },
   // 焦点关注
@@ -325,29 +347,30 @@ module.exports = {
         },
         order: sequelize.random(),
         limit: 7,
-        attributes: ["content"]
-      })
+        attributes: ["content", "id"]
+      });
       // 处理数据
-      attentionRes = JSON.parse(JSON.stringify(attentionRes))
+      attentionRes = JSON.parse(JSON.stringify(attentionRes));
       attentionRes.forEach(v => {
-        // 简略信息
-        v.intro = v.content.substring(0, 20) + "..."
+        // 调用处理intro的函数
+        formatIntro(v);
+
         // 删除内容
-        delete v.content
-      })
+        delete v.content;
+      });
       res.send({
         code: 200,
         msg: "获取成功",
         data: attentionRes
-      })
+      });
     } catch (error) {
-      console.log(error)
-      serverError(res)
+      // console.log(error)
+      serverError(res);
     }
   },
   // 文章详细内容
   async article(req, res) {
-    const { id } = req.query
+    const { id } = req.query;
     try {
       // 获取当前这一篇
       let currentArticleRes = await Article.findOne({
@@ -364,15 +387,15 @@ module.exports = {
           }
         ],
         attributes: { exclude: ["isDelete"] }
-      })
-      if(!currentArticleRes){
+      });
+      if (!currentArticleRes) {
         return res.send({
-          code:400,
-          msg:'id有误,请检查'
-        })
+          code: 400,
+          msg: "id有误,请检查"
+        });
       }
       // 累加
-      let read = currentArticleRes.read + 1
+      let read = currentArticleRes.read + 1;
       // 累加
       await Article.update(
         {
@@ -383,17 +406,17 @@ module.exports = {
             id
           }
         }
-      )
-      currentArticleRes = JSON.parse(JSON.stringify(currentArticleRes))
+      );
+      currentArticleRes = JSON.parse(JSON.stringify(currentArticleRes));
       currentArticleRes.content = html_decode(currentArticleRes.content);
       // 处理封面
       if (currentArticleRes.cover.indexOf("htps://") == -1) {
-        currentArticleRes.cover = `${baseUrl}/${currentArticleRes.cover}`
+        currentArticleRes.cover = `${baseUrl}/${currentArticleRes.cover}`;
       }
       // 评论
-      currentArticleRes.comments = currentArticleRes.comments.length
+      currentArticleRes.comments = currentArticleRes.comments.length;
       // 分类
-      currentArticleRes.category = currentArticleRes.category.name
+      currentArticleRes.category = currentArticleRes.category.name;
       // 内容
       // 查找上一个
       const prev = await Article.findOne({
@@ -409,7 +432,7 @@ module.exports = {
           ["id", "DESC"]
         ],
         attributes: ["id", "title"]
-      })
+      });
       // 查找下一个
       const next = await Article.findOne({
         where: {
@@ -419,7 +442,7 @@ module.exports = {
           isDelete: 0
         },
         attributes: ["id", "title"]
-      })
+      });
 
       res.send({
         code: 200,
@@ -429,10 +452,10 @@ module.exports = {
           prev,
           next
         }
-      })
+      });
     } catch (error) {
-      console.log(error)
-      serverError(res)
+      // console.log(error)
+      serverError(res);
     }
   }
-}
+};

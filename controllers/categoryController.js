@@ -14,7 +14,7 @@ module.exports = {
     // 创建新分类
     try {
       let result = await Category.create({ name, slug })
-      // console.log(result)
+      // // console.log(result)
       // res.send(result)
       res.status(201).send({
         code: 201,
@@ -96,13 +96,13 @@ module.exports = {
   // 删除文章类别
   async _delete(req, res) {
     const { id } = req.body
-    // console.log(id)
+    // // console.log(id)
     try {
       const result = await Category.destroy({
         where: { id }
       })
       // res.send(result)
-      console.log(result)
+      // console.log(result)
       // res.send('/delsuc')
       if(result==1){
         res.send({

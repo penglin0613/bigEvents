@@ -150,7 +150,7 @@
                     type: 'get',
                     url: 'http://localhost:80/api/v1/admin/category/list',
                     success: function (backData) {
-                        console.log(backData);
+                        // console.log(backData);
                         if (backData.code == 200) {
                             //2.通过模板引擎渲染到页面上.
                             var resHtml = template('cate_list', backData);
@@ -172,7 +172,7 @@
                     // var cateId = $('#recipient-id').val().trim();//分类id
                     // var cateName = $('#recipient-name').val().trim(); //分类名
                     // var cateSlug = $('#recipient-slug').val().trim(); //分类别名
-                    // console.log(cateId,cateName,cateSlug);
+                    // // console.log(cateId,cateName,cateSlug);
                     //如果上面获取值得代码不是三句,而是三十句,那写起来就有些恶心了.
                     //因为上面获取值得标签都在form表单中,所以那我们就可以使用formData来一次性的获取他们的值了.
                     //但是使用formData有个前提条件, 后端必须要接收.
@@ -182,7 +182,7 @@
                     //这个方法可以获取form表单里面带有name属性的标签的值. 
                     //获取的值会变成key=value&ke2=value2这种格式的字符串
                     var data = $('form').serialize()
-                    console.log(data);
+                    // console.log(data);
                     
                     //发送ajax请求,完成修改
                     $.ajax({
@@ -243,7 +243,7 @@
                 if (confirm('你真的要删除吗?')) {
                     //3. 获取当前删除按钮身上存的id (data-id那个自定义属性保存的id)
                     var cateId = $(this).attr('data-id');
-                    //console.log(cateId);
+                    //// console.log(cateId);
                     //4. 发送ajax请求,完成删除
                     $.ajax({
                         type: 'post',
@@ -277,7 +277,7 @@
                 $('#recipient-id').val(cateId);
                 $('#recipient-name').val(cateName);
                 $('#recipient-slug').val(cateSlug);
-                console.log(cateId);
+                // console.log(cateId);
                 
 
                 //让模态框显示
