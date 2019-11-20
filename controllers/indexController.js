@@ -97,16 +97,16 @@ module.exports = {
       }
       // console.log(articleId)
       // 查询评论
-      const commentRes = await Comment.findAll({
+      let commentRes = await Comment.findAll({
         where: {
           articleId,
           state: "已通过"
-        },
-        order: [
-          // 根据id倒序
-          ["id", "DESC"]
-        ]
+        }
       });
+      commentRes = JSON.parse(JSON.stringify(commentRes));
+      commentRes.sort((a,b)=>{
+        return  moment(b.date).valueOf() - moment(a.date).valueOf()
+      })
       res.send({
         code: 200,
         msg: "获取成功",
